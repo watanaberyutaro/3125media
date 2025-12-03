@@ -20,13 +20,131 @@ async function getLatestArticles(): Promise<ArticleWithRelations[]> {
     `)
     .eq('status', 'published')
     .order('published_at', { ascending: false })
-    .limit(15)
+    .limit(20)
 
   if (error || !articles) return []
 
   // Get likes and comments count for each article
   const articlesWithCounts = await Promise.all(
     articles.map(async (article: Record<string, unknown>) => {
+      const articleId = article.id as string
+      const [likesResult, commentsResult] = await Promise.all([
+        supabase
+          .from('likes')
+          .select('id', { count: 'exact', head: true })
+          .eq('article_id', articleId),
+        supabase
+          .from('comments')
+          .select('id', { count: 'exact', head: true })
+          .eq('article_id', articleId),
+      ])
+
+      return {
+        ...article,
+        tags: [],
+        _count: {
+          likes: likesResult.count || 0,
+          comments: commentsResult.count || 0,
+        },
+      } as unknown as ArticleWithRelations
+    })
+  )
+
+  return articlesWithCounts
+}
+
+async function getRankingArticles(period: 'daily' | 'weekly' | 'monthly'): Promise<ArticleWithRelations[]> {
+  const supabase = await createClient()
+
+  // Calculate date range
+  const now = new Date()
+  let startDate: Date
+
+  switch (period) {
+    case 'daily':
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      break
+    case 'weekly':
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+    case 'monthly':
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+      break
+  }
+
+  const { data: articles, error } = await supabase
+    .from('articles')
+    .select(`
+      *,
+      category:categories(*),
+      author:users(*)
+    `)
+    .eq('status', 'published')
+    .gte('published_at', startDate.toISOString())
+    .order('views', { ascending: false })
+    .limit(10)
+
+  if (error || !articles) return []
+
+  // Get likes and comments count for each article
+  const articlesWithCounts = await Promise.all(
+    articles.map(async (article: Record<string, unknown>) => {
+      const articleId = article.id as string
+      const [likesResult, commentsResult] = await Promise.all([
+        supabase
+          .from('likes')
+          .select('id', { count: 'exact', head: true })
+          .eq('article_id', articleId),
+        supabase
+          .from('comments')
+          .select('id', { count: 'exact', head: true })
+          .eq('article_id', articleId),
+      ])
+
+      return {
+        ...article,
+        tags: [],
+        _count: {
+          likes: likesResult.count || 0,
+          comments: commentsResult.count || 0,
+        },
+      } as unknown as ArticleWithRelations
+    })
+  )
+
+  return articlesWithCounts
+}
+
+async function getRandomFeaturedArticles(): Promise<ArticleWithRelations[]> {
+  const supabase = await createClient()
+
+  // Get total count first
+  const { count } = await supabase
+    .from('articles')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'published')
+
+  if (!count || count === 0) return []
+
+  // Get random articles by ordering randomly
+  const { data: articles, error } = await supabase
+    .from('articles')
+    .select(`
+      *,
+      category:categories(*),
+      author:users(*)
+    `)
+    .eq('status', 'published')
+    .limit(4)
+
+  if (error || !articles) return []
+
+  // Shuffle the results
+  const shuffled = [...articles].sort(() => Math.random() - 0.5)
+
+  // Get likes and comments count for each article
+  const articlesWithCounts = await Promise.all(
+    shuffled.map(async (article: Record<string, unknown>) => {
       const articleId = article.id as string
       const [likesResult, commentsResult] = await Promise.all([
         supabase
@@ -69,15 +187,23 @@ async function getCategories(): Promise<Category[]> {
 }
 
 export default async function HomePage() {
-  const [articles, categories] = await Promise.all([
+  const [articles, featuredArticles, dailyRanking, weeklyRanking, monthlyRanking, categories] = await Promise.all([
     getLatestArticles(),
+    getRandomFeaturedArticles(),
+    getRankingArticles('daily'),
+    getRankingArticles('weekly'),
+    getRankingArticles('monthly'),
     getCategories(),
   ])
 
   const heroArticle = articles[0]
-  const featuredArticles = articles.slice(1, 5)
-  const mainArticles = articles.slice(5, 11)
-  const sidebarArticles = articles.slice(0, 15)
+  const mainArticles = articles.slice(1, 10)
+
+  const rankingData = {
+    daily: dailyRanking,
+    weekly: weeklyRanking,
+    monthly: monthlyRanking,
+  }
 
   return (
     <div className="min-h-screen">
@@ -116,9 +242,7 @@ export default async function HomePage() {
 
           {/* Ranking Sidebar (Desktop) */}
           <aside className="lg:col-span-1 hidden lg:block">
-            {sidebarArticles.length > 0 && (
-              <RankingSidebar articles={sidebarArticles} />
-            )}
+            <RankingSidebar rankingData={rankingData} />
           </aside>
         </div>
 
@@ -166,9 +290,7 @@ export default async function HomePage() {
 
           {/* Sidebar (Mobile Only) */}
           <aside className="lg:col-span-1 lg:hidden">
-            {sidebarArticles.length > 0 && (
-              <RankingSidebar articles={sidebarArticles} />
-            )}
+            <RankingSidebar rankingData={rankingData} />
           </aside>
         </div>
       </div>

@@ -8,16 +8,19 @@ import { TrendingUp } from 'lucide-react'
 import type { ArticleWithRelations } from '@/types/database'
 
 type RankingSidebarProps = {
-  articles: ArticleWithRelations[]
+  rankingData: {
+    daily: ArticleWithRelations[]
+    weekly: ArticleWithRelations[]
+    monthly: ArticleWithRelations[]
+  }
 }
 
-export function RankingSidebar({ articles }: RankingSidebarProps) {
+export function RankingSidebar({ rankingData }: RankingSidebarProps) {
   const [activeTab, setActiveTab] = useState('daily')
 
-  // In a real implementation, these would be fetched based on different time periods
-  const dailyArticles = articles.slice(0, 5)
-  const weeklyArticles = articles.slice(0, 5)
-  const monthlyArticles = articles.slice(0, 5)
+  const dailyArticles = rankingData.daily.slice(0, 5)
+  const weeklyArticles = rankingData.weekly.slice(0, 5)
+  const monthlyArticles = rankingData.monthly.slice(0, 5)
 
   return (
     <Card className="sticky top-4">
