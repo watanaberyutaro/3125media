@@ -26,8 +26,13 @@ import type { User as UserType } from '@/types/database'
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [user, setUser] = useState<UserType | null>(null)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const supabase = createClient()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const getUser = async () => {
@@ -158,17 +163,18 @@ export function Header() {
             )}
 
             {/* Mobile Menu Sheet */}
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+            {mounted ? (
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="md:hidden"
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[280px] sm:w-[320px]">
                 <SheetHeader>
                   <SheetTitle className="text-left">
                     <Link href="/" onClick={() => setIsMenuOpen(false)}>
@@ -248,7 +254,17 @@ export function Header() {
                   </div>
                 </nav>
               </SheetContent>
-            </Sheet>
+              </Sheet>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden"
+                disabled
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
