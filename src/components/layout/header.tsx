@@ -341,32 +341,34 @@ export function Header() {
 
                   {/* Categories in Mobile Menu */}
                   <div className="border-t pt-4">
-                    <div className="px-3 py-2 text-sm font-semibold text-muted-foreground mb-2">
+                    <div className="px-3 py-2 text-sm font-semibold text-muted-foreground mb-3">
                       カテゴリ
                     </div>
-                    {categories.map((category) => (
-                      <div key={category.slug} className="mb-4">
-                        <Link
-                          href={`/categories/${category.slug}`}
-                          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium hover:bg-muted"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {category.name}
-                        </Link>
-                        <div className="ml-6 mt-1 space-y-1">
-                          {category.items.map((item) => (
-                            <Link
-                              key={item.slug}
-                              href={`/categories/${item.slug}`}
-                              className="block px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
-                              onClick={() => setIsMenuOpen(false)}
-                            >
-                              {item.name}
-                            </Link>
-                          ))}
+                    <div className="grid grid-cols-2 gap-4">
+                      {categories.map((category) => (
+                        <div key={category.slug}>
+                          <Link
+                            href={`/categories/${category.slug}`}
+                            className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-muted"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {category.name}
+                          </Link>
+                          <div className="mt-1 space-y-1 pl-3">
+                            {category.items.map((item) => (
+                              <Link
+                                key={item.slug}
+                                href={`/categories/${item.slug}`}
+                                className="block px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+                                onClick={() => setIsMenuOpen(false)}
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
 
                   {user?.role === 'admin' && (
