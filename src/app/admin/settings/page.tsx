@@ -87,10 +87,12 @@ export default function AdminSettingsPage() {
         .getPublicUrl(filePath)
 
       // Update user avatar_url in database
+      if (!user?.id) throw new Error('User not found')
+
       const { error: updateError } = await supabase
         .from('users')
         .update({ avatar_url: publicUrl })
-        .eq('id', user?.id)
+        .eq('id', user.id)
 
       if (updateError) throw updateError
 
@@ -111,13 +113,15 @@ export default function AdminSettingsPage() {
       setSaving(true)
       setMessage(null)
 
+      if (!user?.id) throw new Error('User not found')
+
       const { error } = await supabase
         .from('users')
         .update({
           name,
           updated_at: new Date().toISOString()
         })
-        .eq('id', user?.id)
+        .eq('id', user.id)
 
       if (error) throw error
 
