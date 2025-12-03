@@ -105,12 +105,22 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Hero Section */}
-        {heroArticle && (
-          <section className="mb-8 md:mb-12">
-            <FeaturedArticle article={heroArticle} />
-          </section>
-        )}
+        {/* Hero Section with Ranking */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
+          {/* Hero Article */}
+          {heroArticle && (
+            <section className="lg:col-span-2">
+              <FeaturedArticle article={heroArticle} />
+            </section>
+          )}
+
+          {/* Ranking Sidebar (Desktop) */}
+          <aside className="lg:col-span-1 hidden lg:block">
+            {sidebarArticles.length > 0 && (
+              <RankingSidebar articles={sidebarArticles} />
+            )}
+          </aside>
+        </div>
 
         {/* Featured Articles Grid */}
         {featuredArticles.length > 0 && (
@@ -126,10 +136,10 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Main Content with Sidebar */}
+        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
           {/* Main Article List */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl md:text-2xl font-bold">最新の記事</h2>
               <Link
@@ -142,7 +152,7 @@ export default async function HomePage() {
             </div>
 
             {mainArticles.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mainArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
@@ -154,8 +164,8 @@ export default async function HomePage() {
             )}
           </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-1">
+          {/* Sidebar (Mobile Only) */}
+          <aside className="lg:col-span-1 lg:hidden">
             {sidebarArticles.length > 0 && (
               <RankingSidebar articles={sidebarArticles} />
             )}
