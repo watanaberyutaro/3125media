@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ExternalLink } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -6,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Description */}
-          <div className="md:col-span-2">
+          <div>
             <Link href="/" className="text-xl font-bold">
               3125 Media
             </Link>
@@ -33,6 +34,35 @@ export function Footer() {
                 <Link href="/categories" className="hover:text-primary transition-colors">
                   カテゴリ
                 </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Related Sites */}
+          <div>
+            <h3 className="font-semibold mb-4">関連サイト</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <a
+                  href="https://3125.jp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors flex items-center gap-1"
+                >
+                  3125HP
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://3125lab.jp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors flex items-center gap-1"
+                >
+                  3125LABHP
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </li>
             </ul>
           </div>
