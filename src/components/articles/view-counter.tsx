@@ -28,7 +28,7 @@ export function ViewCounter({ articleId, initialViews }: ViewCounterProps) {
       }
 
       // Increment view count
-      const { error } = await supabase.rpc('increment_article_views', {
+      const { error } = await (supabase as any).rpc('increment_article_views', {
         article_id: articleId,
       })
 
