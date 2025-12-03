@@ -263,6 +263,11 @@ export default async function HomePage() {
           </aside>
         </div>
 
+        {/* Ranking Sidebar (Mobile Only) - Right after Hero */}
+        <aside className="lg:hidden mb-8 md:mb-12">
+          <RankingSidebar rankingData={rankingData} />
+        </aside>
+
         {/* Featured Articles Grid */}
         {featuredArticles.length > 0 && (
           <section className="mb-8 md:mb-12">
@@ -304,11 +309,6 @@ export default async function HomePage() {
               </div>
             )}
           </div>
-
-          {/* Sidebar (Mobile Only) */}
-          <aside className="lg:col-span-1 lg:hidden">
-            <RankingSidebar rankingData={rankingData} />
-          </aside>
         </div>
       </div>
     </div>
