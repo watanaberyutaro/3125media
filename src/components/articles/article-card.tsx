@@ -16,7 +16,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
     return (
       <Link href={`/articles/${article.slug}`} className="block group">
         <article className="flex gap-3 hover:bg-muted/50 p-2 rounded-lg transition-colors">
-          <div className="relative w-20 h-20 flex-shrink-0 rounded overflow-hidden bg-muted">
+          <div className="relative w-24 aspect-[16/9] flex-shrink-0 rounded overflow-hidden bg-muted">
             {article.thumbnail_url ? (
               <Image
                 src={article.thumbnail_url}
