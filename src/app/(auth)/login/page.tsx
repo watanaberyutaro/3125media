@@ -39,21 +39,29 @@ export default function LoginPage() {
 
       toast.success('ログインしました')
 
-      // Wait for session to be fully synced with cookies
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      // Retry session verification up to 5 times with increasing delays
+      let sessionVerified = false
+      for (let attempt = 0; attempt < 5; attempt++) {
+        // Wait with exponential backoff: 300ms, 600ms, 900ms, 1200ms, 1500ms
+        await new Promise((resolve) => setTimeout(resolve, 300 * (attempt + 1)))
 
-      // Verify session is accessible
-      const { data: { session } } = await supabase.auth.getSession()
+        const { data: { session } } = await supabase.auth.getSession()
 
-      if (session) {
+        if (session) {
+          sessionVerified = true
+          break
+        }
+      }
+
+      if (sessionVerified) {
         // Force a hard navigation to ensure middleware picks up the new session
         window.location.href = '/'
       } else {
-        toast.error('セッションの確認に失敗しました')
+        toast.error('セッションの確認に失敗しました。もう一度お試しください。')
+        setIsLoading(false)
       }
     } catch {
       toast.error('ログインに失敗しました')
-    } finally {
       setIsLoading(false)
     }
   }
