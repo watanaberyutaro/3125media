@@ -98,8 +98,14 @@ export function Header() {
   }, [supabase])
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
+    try {
+      await supabase.auth.signOut()
+      setUser(null)
+      // Force a hard navigation to clear all state
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   const navLinks = [
