@@ -82,7 +82,7 @@ async function getRankingArticles(period: 'daily' | 'weekly' | 'monthly'): Promi
     `)
     .eq('status', 'published')
     .gte('created_at', startDate.toISOString())
-    .order('views', { ascending: false, nullsLast: true })
+    .order('views', { ascending: false, nullsFirst: false })
     .limit(10)
 
   // If no articles found with date filter, get the latest articles instead
