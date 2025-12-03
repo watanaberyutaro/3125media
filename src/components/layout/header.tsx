@@ -2,10 +2,17 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, User, LogOut } from 'lucide-react'
+import { Menu, User, LogOut, Home, FileText, FolderTree } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,9 +65,9 @@ export function Header() {
   }
 
   const navLinks = [
-    { href: '/', label: 'ホーム' },
-    { href: '/articles', label: '記事一覧' },
-    { href: '/categories', label: 'カテゴリ' },
+    { href: '/', label: 'ホーム', icon: Home },
+    { href: '/articles', label: '記事一覧', icon: FileText },
+    { href: '/categories', label: 'カテゴリ', icon: FolderTree },
   ]
 
   return (
@@ -150,58 +157,100 @@ export function Header() {
               </div>
             )}
 
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+            {/* Mobile Menu Sheet */}
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+                <SheetHeader>
+                  <SheetTitle className="text-left">
+                    <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                      3125 Media
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+
+                <nav className="flex flex-col gap-4 mt-8">
+                  {navLinks.map((link) => {
+                    const Icon = link.icon
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`flex items-center gap-3 px-3 py-3 rounded-md text-sm font-medium transition-colors ${
+                          pathname === link.href
+                            ? 'bg-primary text-primary-foreground'
+                            : 'hover:bg-muted'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {link.label}
+                      </Link>
+                    )
+                  })}
+
+                  {user?.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      className={`flex items-center gap-3 px-3 py-3 rounded-md text-sm font-medium transition-colors ${
+                        pathname.startsWith('/admin')
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-muted'
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="h-5 w-5" />
+                      管理画面
+                    </Link>
+                  )}
+
+                  <div className="border-t pt-4 mt-4">
+                    {user ? (
+                      <>
+                        <div className="px-3 py-2 mb-2">
+                          <p className="text-sm font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3"
+                          onClick={() => {
+                            handleLogout()
+                            setIsMenuOpen(false)
+                          }}
+                        >
+                          <LogOut className="h-5 w-5" />
+                          ログアウト
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" className="w-full" asChild>
+                          <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                            ログイン
+                          </Link>
+                        </Button>
+                        <Button className="w-full" asChild>
+                          <Link href="/register" onClick={() => setIsMenuOpen(false)}>
+                            登録
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <nav className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    pathname === link.href ? 'text-primary' : 'text-muted-foreground'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {user?.role === 'admin' && (
-                <Link
-                  href="/admin"
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    pathname.startsWith('/admin') ? 'text-primary' : 'text-muted-foreground'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  管理画面
-                </Link>
-              )}
-              {!user && (
-                <>
-                  <Link href="/login" className="text-sm font-medium" onClick={() => setIsMenuOpen(false)}>
-                    ログイン
-                  </Link>
-                  <Link href="/register" className="text-sm font-medium" onClick={() => setIsMenuOpen(false)}>
-                    登録
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-        )}
       </div>
     </header>
   )

@@ -86,9 +86,9 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
 
   // Default variant for main article lists
   return (
-    <Link href={`/articles/${article.slug}`} className="block group">
-      <article className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-card">
-        <div className="relative aspect-video w-full bg-muted">
+    <Link href={`/articles/${article.slug}`} className="block group h-full">
+      <article className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-card flex flex-col h-full">
+        <div className="relative aspect-video w-full bg-muted flex-shrink-0">
           {article.thumbnail_url ? (
             <Image
               src={article.thumbnail_url}
@@ -103,22 +103,24 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
           )}
         </div>
 
-        <div className="p-4">
-          {article.category && (
-            <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded mb-2">
-              {article.category.name}
-            </span>
-          )}
-          <h3 className="font-bold text-base md:text-lg line-clamp-2 group-hover:text-primary transition-colors mb-2">
-            {article.title}
-          </h3>
-          {article.excerpt && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-              {article.excerpt}
-            </p>
-          )}
+        <div className="p-4 flex flex-col flex-1">
+          <div className="flex-1">
+            {article.category && (
+              <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded mb-2">
+                {article.category.name}
+              </span>
+            )}
+            <h3 className="font-bold text-base md:text-lg line-clamp-2 group-hover:text-primary transition-colors mb-2 min-h-[3rem]">
+              {article.title}
+            </h3>
+            {article.excerpt && (
+              <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
+                {article.excerpt}
+              </p>
+            )}
+          </div>
 
-          <div className="flex items-center gap-4 text-xs text-muted-foreground pt-3 border-t">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground pt-3 border-t mt-auto">
             <span className="flex items-center gap-1">
               <Heart className="h-3 w-3" />
               {article._count?.likes || 0}
@@ -131,7 +133,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
               <Eye className="h-3 w-3" />
               {article.views || 0}
             </span>
-            <time className="ml-auto">
+            <time className="ml-auto truncate">
               {formatDistanceToNow(new Date(article.published_at || article.created_at), {
                 addSuffix: true,
                 locale: ja,
