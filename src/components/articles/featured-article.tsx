@@ -12,7 +12,7 @@ type FeaturedArticleProps = {
 export function FeaturedArticle({ article }: FeaturedArticleProps) {
   return (
     <Link href={`/articles/${article.slug}`} className="block group">
-      <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted">
         {article.thumbnail_url ? (
           <Image
             src={article.thumbnail_url}

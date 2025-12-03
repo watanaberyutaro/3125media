@@ -16,7 +16,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
     return (
       <Link href={`/articles/${article.slug}`} className="block group">
         <article className="flex gap-3 hover:bg-muted/50 p-2 rounded-lg transition-colors">
-          <div className="relative w-24 aspect-[16/9] flex-shrink-0 rounded overflow-hidden bg-muted">
+          <div className="relative w-24 aspect-[4/3] flex-shrink-0 rounded overflow-hidden bg-muted">
             {article.thumbnail_url ? (
               <Image
                 src={article.thumbnail_url}
@@ -57,7 +57,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
     return (
       <Link href={`/articles/${article.slug}`} className="block group">
         <article className="h-full">
-          <div className="relative aspect-video rounded-lg overflow-hidden bg-muted mb-3">
+          <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-3">
             {article.thumbnail_url ? (
               <Image
                 src={article.thumbnail_url}
@@ -94,7 +94,7 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
   return (
     <Link href={`/articles/${article.slug}`} className="block group h-full">
       <article className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-card flex flex-col h-full">
-        <div className="relative aspect-video w-full bg-muted flex-shrink-0">
+        <div className="relative aspect-[4/3] w-full bg-muted flex-shrink-0">
           {article.thumbnail_url ? (
             <Image
               src={article.thumbnail_url}
