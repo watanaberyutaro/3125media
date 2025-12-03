@@ -555,10 +555,10 @@ export default async function HomePage() {
                   href={`/articles/${article.slug}`}
                   className="flex flex-col sm:flex-row gap-4 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-all group"
                 >
-                  {article.featured_image && (
+                  {article.thumbnail_url && (
                     <div className="w-full sm:w-48 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
                       <img
-                        src={article.featured_image}
+                        src={article.thumbnail_url}
                         alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
