@@ -2,48 +2,123 @@ import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 
 export function Footer() {
+  const categories = [
+    {
+      name: 'ガジェット',
+      slug: 'gadget',
+      items: [
+        { name: 'PC・スマホ', slug: 'pc-smartphone' },
+        { name: 'カメラ', slug: 'camera' },
+        { name: '周辺機器', slug: 'peripherals' },
+        { name: 'アクセサリー', slug: 'accessories' },
+      ],
+    },
+    {
+      name: 'テクノロジー',
+      slug: 'technology',
+      items: [
+        { name: 'AI', slug: 'ai' },
+        { name: 'クラウド', slug: 'cloud' },
+        { name: 'ロボット', slug: 'robot' },
+        { name: 'アプリ・ツール', slug: 'apps-tools' },
+      ],
+    },
+    {
+      name: 'ライフスタイル',
+      slug: 'lifestyle',
+      items: [
+        { name: '日記', slug: 'diary' },
+        { name: 'ワークスペース', slug: 'workspace' },
+        { name: 'ミニマリズム', slug: 'minimalism' },
+      ],
+    },
+    {
+      name: '便利・暮らし改善',
+      slug: 'life-improvement',
+      items: [
+        { name: '家具', slug: 'furniture' },
+        { name: '家電', slug: 'appliances' },
+        { name: 'サービス', slug: 'services' },
+        { name: 'ライフハック', slug: 'lifehack' },
+      ],
+    },
+    {
+      name: 'クリエイティブ',
+      slug: 'creative',
+      items: [
+        { name: '映像', slug: 'video' },
+        { name: '写真', slug: 'photo' },
+        { name: 'ゲーム', slug: 'game' },
+        { name: 'コンテンツ制作', slug: 'content-creation' },
+      ],
+    },
+    {
+      name: '仕事・キャリア',
+      slug: 'work-career',
+      items: [
+        { name: '副業', slug: 'side-business' },
+        { name: 'フリーランス', slug: 'freelance' },
+        { name: '働き方', slug: 'workstyle' },
+        { name: 'ビジネスツール', slug: 'business-tools' },
+      ],
+    },
+  ]
+
   return (
-    <footer className="border-t bg-background/50 backdrop-blur">
+    <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
-        {/* Top Section: Logo and Description */}
-        <div className="mb-12">
-          <Link href="/" className="inline-block mb-4">
-            <img src="/logo.png" alt="3125 Media" className="h-8 w-auto" />
-          </Link>
-          <p className="text-sm text-muted-foreground max-w-md">
-            最新のニュースと情報をお届けするWEBメディアです。
-          </p>
+        {/* Categories Section */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
+          {categories.map((category) => (
+            <div key={category.slug}>
+              <h3 className="font-semibold text-sm mb-4">
+                <Link
+                  href={`/categories/${category.slug}`}
+                  className="hover:text-primary transition-colors"
+                >
+                  {category.name}
+                </Link>
+              </h3>
+              <ul className="space-y-2">
+                {category.items.map((item) => (
+                  <li key={item.slug}>
+                    <Link
+                      href={`/categories/${item.slug}`}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Middle Section: Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          {/* Navigation */}
-          <div>
-            <h3 className="font-medium text-sm mb-3">サイト</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                  ホーム
+        {/* Bottom Section */}
+        <div className="pt-8 border-t">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* Logo */}
+            <div className="flex items-center gap-8">
+              <Link href="/" className="inline-block">
+                <img src="/logo.png" alt="3125 Media" className="h-6 w-auto" />
+              </Link>
+              <div className="flex gap-4 text-sm">
+                <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+                  プライバシーポリシー
                 </Link>
-              </li>
-              <li>
-                <Link href="/articles" className="text-muted-foreground hover:text-foreground transition-colors">
-                  記事一覧
+                <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+                  利用規約
                 </Link>
-              </li>
-              <li>
-                <Link href="/categories" className="text-muted-foreground hover:text-foreground transition-colors">
-                  カテゴリ
+                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                  お問い合わせ
                 </Link>
-              </li>
-            </ul>
-          </div>
+              </div>
+            </div>
 
-          {/* Related Sites */}
-          <div>
-            <h3 className="font-medium text-sm mb-3">関連サイト</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
+            {/* Related Sites & Copyright */}
+            <div className="flex flex-col md:flex-row items-center gap-4 text-sm">
+              <div className="flex gap-4">
                 <a
                   href="https://3125.jp"
                   target="_blank"
@@ -53,8 +128,6 @@ export function Footer() {
                   3125HP
                   <ExternalLink className="h-3 w-3" />
                 </a>
-              </li>
-              <li>
                 <a
                   href="https://3125lab.jp"
                   target="_blank"
@@ -64,38 +137,12 @@ export function Footer() {
                   3125LABHP
                   <ExternalLink className="h-3 w-3" />
                 </a>
-              </li>
-            </ul>
+              </div>
+              <p className="text-muted-foreground">
+                &copy; {new Date().getFullYear()} 3125 Media
+              </p>
+            </div>
           </div>
-
-          {/* Legal */}
-          <div className="col-span-2 md:col-span-2">
-            <h3 className="font-medium text-sm mb-3">法的情報</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                  プライバシーポリシー
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-                  利用規約
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
-                  お問い合わせ
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Section: Copyright */}
-        <div className="pt-8 border-t">
-          <p className="text-sm text-muted-foreground text-center">
-            &copy; {new Date().getFullYear()} 3125 Media. All rights reserved.
-          </p>
         </div>
       </div>
     </footer>
