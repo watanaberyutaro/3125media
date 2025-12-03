@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -91,7 +91,7 @@ export function NovelEditor({ initialContent, onChange }: NovelEditorProps) {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4',
+        class: 'prose prose-lg dark:prose-invert max-w-none focus:outline-none min-h-[400px] p-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-2 [&_h3]:mt-4',
       },
       handleDrop: (view, event, slice, moved) => {
         if (!moved && event.dataTransfer?.files?.length) {
@@ -140,10 +140,21 @@ export function NovelEditor({ initialContent, onChange }: NovelEditorProps) {
     },
   })
 
+  // Update editor content when initialContent changes
+  useEffect(() => {
+    if (editor && initialContent) {
+      const currentContent = editor.getJSON()
+      // Only update if content has actually changed
+      if (JSON.stringify(currentContent) !== JSON.stringify(initialContent)) {
+        editor.commands.setContent(initialContent)
+      }
+    }
+  }, [editor, initialContent])
+
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden bg-background">
       {editor && <EditorToolbar editor={editor} onImageUpload={uploadImage} isUploading={isUploading} />}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="[&_.ProseMirror]:min-h-[500px]" />
     </div>
   )
 }

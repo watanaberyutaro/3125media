@@ -58,7 +58,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
 
   return (
     <div
-      className="article-content"
+      className="article-content [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:mt-8 [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mb-4 [&_h2]:mt-8 [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-3 [&_h3]:mt-6 [&_p]:mb-6 [&_p]:leading-[1.8] [&_ul]:mb-6 [&_ol]:mb-6 [&_li]:leading-[1.8]"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )

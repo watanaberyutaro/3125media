@@ -35,7 +35,7 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
             </span>
           )}
 
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors">
+          <h2 className="text-white/80 text-2xl md:text-4xl lg:text-5xl font-bold mb-3 leading-tight group-hover:text-white transition-colors">
             {article.title}
           </h2>
 

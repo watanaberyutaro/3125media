@@ -150,9 +150,17 @@ export default async function ArticlePage({
           </h1>
           <div className="flex items-center gap-4 text-muted-foreground flex-wrap">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                {article.author.name.charAt(0).toUpperCase()}
-              </div>
+              {article.author.avatar_url ? (
+                <img
+                  src={article.author.avatar_url}
+                  alt={article.author.name}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                  {article.author.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <span>{article.author.name}</span>
             </div>
             <time dateTime={article.published_at || article.created_at}>

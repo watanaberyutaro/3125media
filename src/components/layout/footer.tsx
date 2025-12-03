@@ -1,6 +1,20 @@
 import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 
+// X (Twitter) Icon Component
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
+
 export function Footer() {
   const categories = [
     {
@@ -96,7 +110,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-8 border-t">
+        <div className="pt-8 border-t space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             {/* Logo */}
             <div className="flex items-center gap-8">
@@ -116,32 +130,46 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Related Sites & Copyright */}
-            <div className="flex flex-col md:flex-row items-center gap-4 text-sm">
-              <div className="flex gap-4">
-                <a
-                  href="https://3125.jp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-                >
-                  3125HP
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-                <a
-                  href="https://3125lab.jp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-                >
-                  3125LABHP
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
-              <p className="text-muted-foreground">
-                &copy; {new Date().getFullYear()} 3125 Media
-              </p>
+            {/* SNS Links */}
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground font-medium">Follow us</span>
+              <a
+                href="https://x.com/3125Lab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-lg"
+                aria-label="Follow us on X (Twitter)"
+              >
+                <XIcon className="h-5 w-5" />
+              </a>
             </div>
+          </div>
+
+          {/* Related Sites & Copyright */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t">
+            <div className="flex gap-4 text-sm">
+              <a
+                href="https://3125.jp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                3125HP
+                <ExternalLink className="h-3 w-3" />
+              </a>
+              <a
+                href="https://3125lab.jp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+              >
+                3125LABHP
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+            <p className="text-muted-foreground text-sm">
+              &copy; {new Date().getFullYear()} 3125 Media. All rights reserved.
+            </p>
           </div>
         </div>
       </div>

@@ -111,7 +111,68 @@ export function Header() {
   const navLinks = [
     { href: '/', label: 'ホーム', icon: Home },
     { href: '/articles', label: '記事一覧', icon: FileText },
-    { href: '/categories', label: 'カテゴリ', icon: FolderTree },
+  ]
+
+  const categories = [
+    {
+      name: 'ガジェット',
+      slug: 'gadget',
+      items: [
+        { name: 'PC・スマホ', slug: 'pc-smartphone' },
+        { name: 'カメラ', slug: 'camera' },
+        { name: '周辺機器', slug: 'peripherals' },
+        { name: 'アクセサリー', slug: 'accessories' },
+      ],
+    },
+    {
+      name: 'テクノロジー',
+      slug: 'technology',
+      items: [
+        { name: 'AI', slug: 'ai' },
+        { name: 'クラウド', slug: 'cloud' },
+        { name: 'ロボット', slug: 'robot' },
+        { name: 'アプリ・ツール', slug: 'apps-tools' },
+      ],
+    },
+    {
+      name: 'ライフスタイル',
+      slug: 'lifestyle',
+      items: [
+        { name: '日記', slug: 'diary' },
+        { name: 'ワークスペース', slug: 'workspace' },
+        { name: 'ミニマリズム', slug: 'minimalism' },
+      ],
+    },
+    {
+      name: '便利・暮らし改善',
+      slug: 'life-improvement',
+      items: [
+        { name: '家具', slug: 'furniture' },
+        { name: '家電', slug: 'appliances' },
+        { name: 'サービス', slug: 'services' },
+        { name: 'ライフハック', slug: 'lifehack' },
+      ],
+    },
+    {
+      name: 'クリエイティブ',
+      slug: 'creative',
+      items: [
+        { name: '映像', slug: 'video' },
+        { name: '写真', slug: 'photo' },
+        { name: 'ゲーム', slug: 'game' },
+        { name: 'コンテンツ制作', slug: 'content-creation' },
+      ],
+    },
+    {
+      name: '仕事・キャリア',
+      slug: 'work-career',
+      items: [
+        { name: '副業', slug: 'side-business' },
+        { name: 'フリーランス', slug: 'freelance' },
+        { name: '働き方', slug: 'workstyle' },
+        { name: 'ビジネスツール', slug: 'business-tools' },
+      ],
+    },
   ]
 
   return (
@@ -136,6 +197,44 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            {/* Categories Mega Menu */}
+            <div className="relative group">
+              <button
+                className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${
+                  pathname.startsWith('/categories') ? 'text-primary' : 'text-muted-foreground'
+                }`}
+              >
+                <FolderTree className="h-4 w-4" />
+                カテゴリ
+              </button>
+              {/* Mega Menu Dropdown */}
+              <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
+                <div className="bg-background border rounded-lg shadow-lg p-6 w-[600px] grid grid-cols-2 gap-6">
+                  {categories.map((category) => (
+                    <div key={category.slug}>
+                      <Link
+                        href={`/categories/${category.slug}`}
+                        className="font-semibold text-sm mb-3 block hover:text-primary transition-colors"
+                      >
+                        {category.name}
+                      </Link>
+                      <ul className="space-y-2">
+                        {category.items.map((item) => (
+                          <li key={item.slug}>
+                            <Link
+                              href={`/categories/${item.slug}`}
+                              className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             {user?.role === 'admin' && (
               <Link
                 href="/admin"
@@ -241,6 +340,36 @@ export function Header() {
                       </Link>
                     )
                   })}
+
+                  {/* Categories in Mobile Menu */}
+                  <div className="border-t pt-4">
+                    <div className="px-3 py-2 text-sm font-semibold text-muted-foreground mb-2">
+                      カテゴリ
+                    </div>
+                    {categories.map((category) => (
+                      <div key={category.slug} className="mb-4">
+                        <Link
+                          href={`/categories/${category.slug}`}
+                          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium hover:bg-muted"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {category.name}
+                        </Link>
+                        <div className="ml-6 mt-1 space-y-1">
+                          {category.items.map((item) => (
+                            <Link
+                              key={item.slug}
+                              href={`/categories/${item.slug}`}
+                              className="block px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              {item.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
                   {user?.role === 'admin' && (
                     <Link

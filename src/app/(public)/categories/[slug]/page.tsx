@@ -33,8 +33,30 @@ async function getAllParentCategories(): Promise<Category[]> {
   return data as Category[]
 }
 
-async function getArticlesByCategory(categoryId: string): Promise<ArticleWithRelations[]> {
+async function getChildCategories(parentId: string): Promise<Category[]> {
   const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('parent_id', parentId)
+    .order('order')
+
+  if (error || !data) return []
+
+  return data as Category[]
+}
+
+async function getArticlesByCategory(categoryId: string, includeChildren: boolean = false): Promise<ArticleWithRelations[]> {
+  const supabase = await createClient()
+
+  let categoryIds = [categoryId]
+
+  // If this is a parent category, also get articles from child categories
+  if (includeChildren) {
+    const childCategories = await getChildCategories(categoryId)
+    categoryIds = [categoryId, ...childCategories.map(c => c.id)]
+  }
 
   const { data: articles, error } = await supabase
     .from('articles')
@@ -43,7 +65,7 @@ async function getArticlesByCategory(categoryId: string): Promise<ArticleWithRel
       category:categories(*),
       author:users(*)
     `)
-    .eq('category_id', categoryId)
+    .in('category_id', categoryIds)
     .eq('status', 'published')
     .order('published_at', { ascending: false })
 
@@ -103,16 +125,23 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const [category, allCategories] = await Promise.all([
-    getCategory(slug),
-    getAllParentCategories(),
-  ])
+  const category = await getCategory(slug)
 
   if (!category) {
     notFound()
   }
 
-  const articles = await getArticlesByCategory(category.id)
+  // Check if this is a parent category (has no parent_id)
+  const isParentCategory = !category.parent_id
+
+  // Get child categories if this is a parent category
+  const childCategories = isParentCategory ? await getChildCategories(category.id) : []
+
+  // Get all parent categories for navigation
+  const allCategories = await getAllParentCategories()
+
+  // Get articles - include children if this is a parent category
+  const articles = await getArticlesByCategory(category.id, isParentCategory)
 
   return (
     <div className="min-h-screen">
@@ -120,22 +149,12 @@ export default async function CategoryPage({
       <section className="border-b bg-muted/30">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
-            <Link
-              href="/categories"
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-colors ${
-                !slug
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-background hover:bg-primary hover:text-primary-foreground'
-              }`}
-            >
-              すべて
-            </Link>
             {allCategories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.slug}`}
                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-colors ${
-                  category.id === cat.id
+                  category.id === cat.id || category.parent_id === cat.id
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-background hover:bg-primary hover:text-primary-foreground'
                 }`}
@@ -153,6 +172,21 @@ export default async function CategoryPage({
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{category.name}</h1>
           {category.description && (
             <p className="text-muted-foreground text-lg">{category.description}</p>
+          )}
+
+          {/* Child Categories Links */}
+          {childCategories.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {childCategories.map((child) => (
+                <Link
+                  key={child.id}
+                  href={`/categories/${child.slug}`}
+                  className="px-4 py-2 bg-muted hover:bg-primary hover:text-primary-foreground rounded-full text-sm font-medium transition-colors"
+                >
+                  {child.name}
+                </Link>
+              ))}
+            </div>
           )}
         </div>
 

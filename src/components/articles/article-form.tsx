@@ -174,12 +174,20 @@ export function ArticleForm({ categories, tags, initialData }: ArticleFormProps)
       // 生成されたコンテンツをエディタに設定
       setContent(data.content)
 
-      // 抜粋も自動生成
+      // 抜粋を設定
       if (data.excerpt) {
         setExcerpt(data.excerpt)
       }
 
-      toast.success('記事を生成しました')
+      // SEO設定を設定
+      if (data.metaTitle) {
+        setMetaTitle(data.metaTitle)
+      }
+      if (data.metaDescription) {
+        setMetaDescription(data.metaDescription)
+      }
+
+      toast.success('記事を生成しました！本文、抜粋、SEO設定が自動入力されました。')
     } catch (error) {
       console.error(error)
       toast.error('記事の生成に失敗しました')
@@ -278,49 +286,6 @@ export function ArticleForm({ categories, tags, initialData }: ArticleFormProps)
 
   return (
     <div className="space-y-6">
-      {/* AI記事生成セクション */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            AI記事生成
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="aiPrompt">伝えたいこと</Label>
-            <Textarea
-              id="aiPrompt"
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              placeholder="記事で伝えたいこと、キーポイントなどを入力してください..."
-              rows={4}
-              disabled={isGenerating}
-            />
-            <p className="text-sm text-muted-foreground">
-              タイトルと伝えたいことを元に、約3000文字の記事を生成します
-            </p>
-          </div>
-          <Button
-            onClick={handleAIGenerate}
-            disabled={isGenerating || !title || !aiPrompt}
-            className="w-full"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                生成中...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                記事を生成
-              </>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
-
       {/* 基本情報 */}
       <Card>
         <CardHeader>
@@ -415,6 +380,50 @@ export function ArticleForm({ categories, tags, initialData }: ArticleFormProps)
               ))}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* AI記事生成セクション */}
+      <Card className="border-primary">
+        <CardHeader className="bg-primary/5">
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            AI記事生成
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-6">
+          <div className="space-y-2">
+            <Label htmlFor="aiPrompt">伝えたいこと</Label>
+            <Textarea
+              id="aiPrompt"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="記事で伝えたいこと、キーポイントなどを入力してください...&#10;例：新しいガジェットのレビュー、使用感、おすすめポイントなど"
+              rows={6}
+              disabled={isGenerating}
+            />
+            <p className="text-sm text-muted-foreground">
+              タイトルと伝えたいことを元に、本文・抜粋・SEO設定を自動生成します（約3000文字）
+            </p>
+          </div>
+          <Button
+            onClick={handleAIGenerate}
+            disabled={isGenerating || !title || !aiPrompt}
+            className="w-full h-12 text-base"
+            size="lg"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                記事を生成中...（30秒ほどかかります）
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                記事を生成（本文・抜粋・SEO設定）
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
 

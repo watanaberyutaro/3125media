@@ -29,7 +29,11 @@
       "Bash(node scripts/check-ranking.mjs:*)",
       "Bash(set -a)",
       "Bash(source .env.local)",
-      "Bash(set +a)"
+      "Bash(set +a)",
+      "Bash(chmod:*)",
+      "Bash(node scripts/check-categories.mjs:*)",
+      "Bash(node scripts/fix-duplicate-categories.mjs:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

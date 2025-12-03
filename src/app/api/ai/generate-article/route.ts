@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: `あなたはプロフェッショナルなWebメディアのライターです。
+          content: `あなたはテクノロジー・ガジェット系Webメディアのライターです。
 与えられたタイトルと要点を元に、約3000文字の記事を執筆してください。
 
 記事の構成:
@@ -156,10 +156,14 @@ export async function POST(request: NextRequest) {
 3. リストは「- 」または「1. 」で記述
 4. 適度に段落を分けて読みやすくする（1段落は3-5文程度）
 
-文体:
-- 読みやすく、わかりやすい日本語
-- 専門用語は必要に応じて説明を加える
-- 具体例や比喩を使って説明する`,
+文体のポイント（重要）:
+- 敬体（です・ます調）だが、堅苦しくない親しみやすさ
+- 「〜ですね」「〜なんです」「〜なんですよ」などの柔らかい表現を適度に使用
+- 読者に語りかけるような書き方（「気になりませんか？」「使ってみたくなりますよね」）
+- 専門用語は使ってOKだが、わかりやすく噛み砕いて説明
+- 具体例やたとえ話で分かりやすく
+- 適度な驚きや興奮を表現（「なんと」「驚くべきことに」「実は」）
+- 自然な会話調で、でも信頼性は保つ`,
         },
         {
           role: 'user',
@@ -228,11 +232,18 @@ ${prompt}
       .replace(/^###\s+/gm, '')
       .replace(/^[-*]\s+/gm, '')
       .replace(/^\d+\.\s+/gm, '')
+      .trim()
       .slice(0, 200)
+
+    // SEO用のメタタイトルとメタディスクリプションを生成
+    const metaTitle = title.length <= 60 ? title : title.slice(0, 57) + '...'
+    const metaDescription = excerpt.length <= 160 ? excerpt : excerpt.slice(0, 157) + '...'
 
     return NextResponse.json({
       content,
       excerpt,
+      metaTitle,
+      metaDescription,
     })
   } catch (error) {
     console.error('OpenAI API Error:', error)
