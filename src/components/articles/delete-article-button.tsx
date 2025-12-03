@@ -30,17 +30,59 @@ export function DeleteArticleButton({ articleId }: DeleteArticleButtonProps) {
     setIsDeleting(true)
 
     try {
+      // First delete related records
+      const { error: likesError } = await supabase
+        .from('likes')
+        .delete()
+        .eq('article_id', articleId)
+
+      if (likesError) {
+        console.error('Failed to delete likes:', likesError)
+      }
+
+      const { error: commentsError } = await supabase
+        .from('comments')
+        .delete()
+        .eq('article_id', articleId)
+
+      if (commentsError) {
+        console.error('Failed to delete comments:', commentsError)
+      }
+
+      const { error: impressionsError } = await supabase
+        .from('impressions')
+        .delete()
+        .eq('article_id', articleId)
+
+      if (impressionsError) {
+        console.error('Failed to delete impressions:', impressionsError)
+      }
+
+      const { error: tagsError } = await supabase
+        .from('article_tags')
+        .delete()
+        .eq('article_id', articleId)
+
+      if (tagsError) {
+        console.error('Failed to delete article_tags:', tagsError)
+      }
+
+      // Finally delete the article
       const { error } = await supabase
         .from('articles')
         .delete()
         .eq('id', articleId)
 
-      if (error) throw error
+      if (error) {
+        console.error('Failed to delete article:', error)
+        throw error
+      }
 
       toast.success('記事を削除しました')
       setOpen(false)
       router.refresh()
-    } catch {
+    } catch (error) {
+      console.error('Delete error:', error)
       toast.error('削除に失敗しました')
     } finally {
       setIsDeleting(false)
