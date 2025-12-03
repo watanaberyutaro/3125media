@@ -62,17 +62,18 @@ async function getRankingArticles(period: 'daily' | 'weekly' | 'monthly'): Promi
 
   switch (period) {
     case 'daily':
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000) // Last 24 hours
       break
     case 'weekly':
       startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
       break
     case 'monthly':
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
       break
   }
 
-  const { data: articles, error } = await supabase
+  // Try to get articles by views first
+  let { data: articles, error } = await supabase
     .from('articles')
     .select(`
       *,
@@ -80,9 +81,25 @@ async function getRankingArticles(period: 'daily' | 'weekly' | 'monthly'): Promi
       author:users(*)
     `)
     .eq('status', 'published')
-    .gte('published_at', startDate.toISOString())
-    .order('views', { ascending: false })
+    .gte('created_at', startDate.toISOString())
+    .order('views', { ascending: false, nullsLast: true })
     .limit(10)
+
+  // If no articles found with date filter, get the latest articles instead
+  if (!articles || articles.length === 0) {
+    const fallback = await supabase
+      .from('articles')
+      .select(`
+        *,
+        category:categories(*),
+        author:users(*)
+      `)
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(10)
+
+    articles = fallback.data || []
+  }
 
   if (error || !articles) return []
 
