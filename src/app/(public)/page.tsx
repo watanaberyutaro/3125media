@@ -142,7 +142,7 @@ export default async function HomePage() {
             </div>
 
             {mainArticles.length > 0 ? (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {mainArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}

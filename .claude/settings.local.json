@@ -22,7 +22,10 @@
       "Bash(git init:*)",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n初回コミット: 3125 Media WEBメディアサイト\n\n主な機能:\n- AI記事生成機能（GPT-4o-mini使用）\n- API使用量トラッキング（トークン数・推定金額）\n- 記事管理（作成・編集・削除）\n- カテゴリ・タグ管理\n- コメント機能\n- いいね・閲覧数機能\n- アナリティクス機能\n- Gizmodoスタイルのレイアウト\n- モバイル対応管理画面\n\n技術スタック:\n- Next.js 16 (App Router, Turbopack)\n- TypeScript\n- Tailwind CSS v4\n- Supabase (認証・データベース)\n- Tiptap (リッチテキストエディタ)\n- OpenAI API (記事生成)\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
