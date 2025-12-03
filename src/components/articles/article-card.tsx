@@ -31,15 +31,21 @@ export function ArticleCard({ article, variant = 'default' }: ArticleCardProps) 
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm line-clamp-3 group-hover:text-primary transition-colors mb-1">
+            <h4 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors mb-1">
               {article.title}
             </h4>
-            <time className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(article.published_at || article.created_at), {
-                addSuffix: true,
-                locale: ja,
-              })}
-            </time>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <time>
+                {formatDistanceToNow(new Date(article.published_at || article.created_at), {
+                  addSuffix: true,
+                  locale: ja,
+                })}
+              </time>
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {article.views || 0}
+              </span>
+            </div>
           </div>
         </article>
       </Link>
