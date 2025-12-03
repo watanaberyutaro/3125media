@@ -22,7 +22,7 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -32,9 +32,25 @@ export default function LoginPage() {
         return
       }
 
+      if (!data.session) {
+        toast.error('セッションの作成に失敗しました')
+        return
+      }
+
       toast.success('ログインしました')
-      router.push('/')
-      router.refresh()
+
+      // Wait for session to be fully synced with cookies
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Verify session is accessible
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (session) {
+        // Force a hard navigation to ensure middleware picks up the new session
+        window.location.href = '/'
+      } else {
+        toast.error('セッションの確認に失敗しました')
+      }
     } catch {
       toast.error('ログインに失敗しました')
     } finally {

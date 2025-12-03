@@ -1,0 +1,18 @@
+{
+  "name": "3125 Media",
+  "short_name": "3125 Media",
+  "description": "最新のニュースと情報をお届けするWEBメディアです。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -35,33 +35,66 @@ export function Header() {
   }, [])
 
   useEffect(() => {
+    let isMounted = true
+
     const getUser = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-      if (authUser) {
-        const { data } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', authUser.id)
-          .single()
-        setUser(data)
+      try {
+        // First, try to get the session from cookies
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (!isMounted) return
+
+        if (session?.user) {
+          const { data } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
+
+          if (isMounted) {
+            setUser(data)
+          }
+        } else {
+          if (isMounted) {
+            setUser(null)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to get user:', error)
+        if (isMounted) {
+          setUser(null)
+        }
       }
     }
+
     getUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        const { data } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-        setUser(data)
-      } else {
-        setUser(null)
+      if (!isMounted) return
+
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          const { data } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
+
+          if (isMounted) {
+            setUser(data)
+          }
+        }
+      } else if (event === 'SIGNED_OUT') {
+        if (isMounted) {
+          setUser(null)
+        }
       }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
   }, [supabase])
 
   const handleLogout = async () => {
@@ -81,7 +114,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold">3125 Media</span>
+            <img src="/logo.png" alt="3125 Media" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -177,8 +210,8 @@ export function Header() {
                 <SheetContent side="left" className="w-[280px] sm:w-[320px]">
                 <SheetHeader>
                   <SheetTitle className="text-left">
-                    <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                      3125 Media
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center">
+                      <img src="/logo.png" alt="3125 Media" className="h-8 w-auto" />
                     </Link>
                   </SheetTitle>
                 </SheetHeader>

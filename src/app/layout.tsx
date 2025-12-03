@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     template: "%s | 3125 Media",
   },
   description: "最新のニュースと情報をお届けするWEBメディアです。",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "ja_JP",
@@ -26,6 +31,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "3125 Media",
   },
 };
 
