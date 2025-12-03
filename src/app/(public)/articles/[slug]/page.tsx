@@ -8,6 +8,7 @@ import { ArticleContent } from '@/components/articles/article-content'
 import { LikeButton } from '@/components/articles/like-button'
 import { CommentSection } from '@/components/comments/comment-section'
 import { ImpressionTracker } from '@/components/analytics/impression-tracker'
+import { ViewCounter } from '@/components/articles/view-counter'
 import type { Article, Category, User, Tag } from '@/types/database'
 
 type ArticleDetail = Article & {
@@ -147,7 +148,7 @@ export default async function ArticlePage({
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             {article.title}
           </h1>
-          <div className="flex items-center gap-4 text-muted-foreground">
+          <div className="flex items-center gap-4 text-muted-foreground flex-wrap">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                 {article.author.name.charAt(0).toUpperCase()}
@@ -161,6 +162,7 @@ export default async function ArticlePage({
                 day: 'numeric',
               })}
             </time>
+            <ViewCounter articleId={article.id} initialViews={article.views} />
           </div>
         </header>
 
