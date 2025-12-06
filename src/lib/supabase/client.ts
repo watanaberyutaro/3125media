@@ -8,12 +8,20 @@ export function createClient() {
     {
       cookies: {
         getAll() {
+          // SSR中はdocumentが存在しないため空配列を返す
+          if (typeof document === 'undefined') {
+            return []
+          }
           return document.cookie.split('; ').map((cookie) => {
             const [name, ...rest] = cookie.split('=')
             return { name, value: rest.join('=') }
           })
         },
         setAll(cookiesToSet) {
+          // SSR中はdocumentが存在しないため何もしない
+          if (typeof document === 'undefined') {
+            return
+          }
           cookiesToSet.forEach(({ name, value, options }) => {
             let cookie = `${name}=${value}`
 
