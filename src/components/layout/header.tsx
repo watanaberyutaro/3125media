@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
@@ -184,142 +183,62 @@ export function Header() {
             <img src="/logo.png" alt="3125 Media" className="h-8 w-auto" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === link.href ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {/* Categories Mega Menu */}
-            <div className="relative group">
-              <button
-                className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 ${
-                  pathname.startsWith('/categories') ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                <FolderTree className="h-4 w-4" />
-                カテゴリ
-              </button>
-              {/* Mega Menu Dropdown */}
-              <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
-                <div className="bg-background border rounded-lg shadow-lg p-6 w-[600px] grid grid-cols-2 gap-6">
-                  {categories.map((category) => (
-                    <div key={category.slug}>
-                      <Link
-                        href={`/categories/${category.slug}`}
-                        className="font-semibold text-sm mb-3 block hover:text-primary transition-colors"
-                      >
-                        {category.name}
-                      </Link>
-                      <ul className="space-y-2">
-                        {category.items.map((item) => (
-                          <li key={item.slug}>
-                            <Link
-                              href={`/categories/${item.slug}`}
-                              className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {user?.role === 'admin' && (
-              <Link
-                href="/admin"
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  pathname.startsWith('/admin') ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                管理画面
-              </Link>
-            )}
-          </nav>
+          {/* Desktop Navigation - Hidden, using hamburger menu instead */}
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar_url || undefined} alt={user.name} />
-                      <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium">{user.name}</p>
-                      <p className="w-[200px] truncate text-sm text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  {user.role === 'admin' && (
-                    <>
-                      <DropdownMenuItem asChild>
-                        <Link href="/admin">管理画面</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">
-                      <User className="mr-2 h-4 w-4" />
-                      プロフィール
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    ログアウト
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" asChild>
-                  <Link href="/login">ログイン</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/register">登録</Link>
-                </Button>
-              </div>
-            )}
-
-            {/* Mobile Menu Sheet */}
+          {/* Hamburger Menu Button - Always visible */}
+          <div className="flex items-center">
             {mounted ? (
               <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="md:hidden"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-full sm:w-[400px] p-0 flex flex-col h-full">
-                <div className="px-6 py-4 border-b">
-                  <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center">
+                <SheetContent side="right" className="w-full sm:w-[90%] md:w-[50%] lg:w-[40%] p-0 flex flex-col h-full overflow-hidden">
+                <SheetTitle className="sr-only">ナビゲーションメニュー</SheetTitle>
+                {/* Header with Logo and User Info */}
+                <div className="px-6 py-4 border-b bg-muted/30">
+                  <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center mb-4">
                     <img src="/logo.png" alt="3125 Media" className="h-10 w-auto" />
                   </Link>
+
+                  {/* User Info at Top */}
+                  {user ? (
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background border">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={user.avatar_url || undefined} alt={user.name} />
+                        <AvatarFallback className="text-lg">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold truncate">{user.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                        {user.role === 'admin' && (
+                          <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-primary text-primary-foreground rounded">
+                            管理者
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Button className="w-full" asChild>
+                        <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                          ログイン
+                        </Link>
+                      </Button>
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link href="/register" onClick={() => setIsMenuOpen(false)}>
+                          新規登録
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                <nav className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
+                <nav className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-6">
                   {navLinks.map((link) => {
                     const Icon = link.icon
                     return (
@@ -339,8 +258,8 @@ export function Header() {
                     )
                   })}
 
-                  {/* Categories in Mobile Menu */}
-                  <div className="border-t pt-4">
+                  {/* Categories Section */}
+                  <div className="border-t pt-6">
                     <div className="px-3 py-2 text-sm font-semibold text-muted-foreground mb-3">
                       カテゴリ
                     </div>
@@ -371,40 +290,44 @@ export function Header() {
                     </div>
                   </div>
 
+                  {/* Admin Section */}
                   {user?.role === 'admin' && (
-                    <Link
-                      href="/admin"
-                      className={`flex items-center gap-3 px-3 py-3 rounded-md text-sm font-medium transition-colors ${
-                        pathname.startsWith('/admin')
-                          ? 'bg-primary text-primary-foreground'
-                          : 'hover:bg-muted'
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <User className="h-5 w-5" />
-                      管理画面
-                    </Link>
+                    <div className="border-t pt-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <User className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-bold">管理者メニュー</h3>
+                      </div>
+                      <Link
+                        href="/admin"
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors border ${
+                          pathname.startsWith('/admin')
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'hover:bg-muted border-border'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <User className="h-5 w-5" />
+                        管理画面
+                      </Link>
+                    </div>
                   )}
                 </nav>
 
-                <div className="border-t px-6 py-4 bg-muted/30">
-                  {user ? (
-                    <>
-                      <div className="px-3 py-2 mb-2">
-                        <p className="text-sm font-medium">{user.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                      </div>
+                {/* User Actions Footer */}
+                {user && (
+                  <div className="border-t px-6 py-4 bg-muted/30">
+                    <div className="flex flex-col gap-2">
                       <Link
                         href="/profile"
-                        className="flex items-center gap-3 px-3 py-2 rounded-md text-sm hover:bg-muted mb-2"
+                        className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium hover:bg-background border border-transparent hover:border-border transition-all"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <User className="h-4 w-4" />
-                        プロフィール
+                        <User className="h-5 w-5" />
+                        プロフィール設定
                       </Link>
                       <Button
                         variant="ghost"
-                        className="w-full justify-start gap-3"
+                        className="w-full justify-start gap-3 h-auto py-3 hover:bg-background border border-transparent hover:border-border"
                         onClick={() => {
                           handleLogout()
                           setIsMenuOpen(false)
@@ -413,22 +336,9 @@ export function Header() {
                         <LogOut className="h-5 w-5" />
                         ログアウト
                       </Button>
-                    </>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <Button variant="outline" className="w-full" asChild>
-                        <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                          ログイン
-                        </Link>
-                      </Button>
-                      <Button className="w-full" asChild>
-                        <Link href="/register" onClick={() => setIsMenuOpen(false)}>
-                          登録
-                        </Link>
-                      </Button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </SheetContent>
               </Sheet>
             ) : (

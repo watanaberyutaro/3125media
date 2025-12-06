@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { ArticleContent } from '@/components/articles/article-content'
 import { LikeButton } from '@/components/articles/like-button'
+import { ShareButton } from '@/components/articles/share-button'
 import { CommentSection } from '@/components/comments/comment-section'
 import { ImpressionTracker } from '@/components/analytics/impression-tracker'
 import { ViewCounter } from '@/components/articles/view-counter'
@@ -204,12 +205,16 @@ export default async function ArticlePage({
           </div>
         )}
 
-        {/* Like Button */}
-        <div className="flex justify-center py-8 border-t border-b mb-8">
+        {/* Like Button and Share */}
+        <div className="flex justify-center items-center gap-4 py-8 border-t border-b mb-8">
           <LikeButton
             articleId={article.id}
             initialCount={likeCount}
             initialLiked={userLiked}
+          />
+          <ShareButton
+            title={article.title}
+            url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://3125media.com'}/articles/${article.slug}`}
           />
         </div>
 
