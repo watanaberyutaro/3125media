@@ -1,31 +1,42 @@
 import { createBrowserClient } from '@supabase/ssr'
 import type { Database } from '@/types/database'
 
-let client: ReturnType<typeof createBrowserClient<Database>> | undefined
-
 export function createClient() {
-  // サーバー側では空のクライアントを返す（エラー回避）
-  if (typeof window === 'undefined') {
-    // サーバー側では最小限のモックを返す
-    return createBrowserClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll: () => [],
-          setAll: () => {},
+  return createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return document.cookie.split('; ').map((cookie) => {
+            const [name, ...rest] = cookie.split('=')
+            return { name, value: rest.join('=') }
+          })
         },
-      }
-    )
-  }
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            let cookie = `${name}=${value}`
 
-  // ブラウザ環境ではシングルトンパターンでクライアントを再利用
-  if (!client) {
-    client = createBrowserClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-  }
+            if (options?.maxAge) {
+              cookie += `; max-age=${options.maxAge}`
+            }
+            if (options?.path) {
+              cookie += `; path=${options.path}`
+            }
+            if (options?.domain) {
+              cookie += `; domain=${options.domain}`
+            }
+            if (options?.sameSite) {
+              cookie += `; samesite=${options.sameSite}`
+            }
+            if (options?.secure) {
+              cookie += '; secure'
+            }
 
-  return client
+            document.cookie = cookie
+          })
+        },
+      },
+    }
+  )
 }
