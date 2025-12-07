@@ -10,7 +10,15 @@ interface ShareButtonProps {
 
 export function ShareButton({ title, url }: ShareButtonProps) {
   const handleShare = () => {
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
+    const shareText = `記事を更新しました！
+本日のテーマはこちら👇
+「${title}」
+
+${url}
+
+ぜひチェックしてみてください。`
+
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
     window.open(twitterUrl, '_blank', 'noopener,noreferrer,width=550,height=420')
   }
 
