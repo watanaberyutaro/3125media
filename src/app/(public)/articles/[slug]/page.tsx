@@ -214,7 +214,7 @@ export default async function ArticlePage({
           />
           <ShareButton
             title={article.title}
-            url={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://3125media.com'}/articles/${article.slug}`}
+            slug={article.slug}
           />
         </div>
 

@@ -5,11 +5,14 @@ import { Button } from '@/components/ui/button'
 
 interface ShareButtonProps {
   title: string
-  url: string
+  slug: string
 }
 
-export function ShareButton({ title, url }: ShareButtonProps) {
+export function ShareButton({ title, slug }: ShareButtonProps) {
   const handleShare = () => {
+    // ブラウザの現在のURLを使用して正しいURLを生成
+    const url = `${window.location.origin}/articles/${slug}`
+
     const shareText = `記事を更新しました！
 本日のテーマはこちら👇
 「${title}」
