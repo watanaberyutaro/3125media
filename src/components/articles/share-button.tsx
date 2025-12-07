@@ -10,8 +10,8 @@ interface ShareButtonProps {
 
 export function ShareButton({ title, slug }: ShareButtonProps) {
   const handleShare = () => {
-    // ブラウザの現在のURLを使用して正しいURLを生成
-    const url = `${window.location.origin}/articles/${slug}`
+    // ブラウザの現在のURLを使用（slugをエンコード）
+    const url = `${window.location.origin}/articles/${encodeURIComponent(slug)}`
 
     const shareText = `記事を更新しました！
 本日のテーマはこちら👇
